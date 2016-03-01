@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    h1 DataLoader
+    form(action = "/submitData", method="post", enctype="multipart/form-data")
+        span.label Image Id:
+        input(type="text", name="id", label="Image ID: ")
+        br
+        span.label Upload File:
+        input(type="file", name="upload_image")
+        br
+        input(type="submit")

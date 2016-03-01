@@ -1,0 +1,5 @@
+INFO:root:Log started on: 2016-03-01 11:37:36.335232
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): localhost
+DEBUG:requests.packages.urllib3.connectionpool:"POST /services/test/DataLoaderApiTest/submit/json HTTP/1.1" 200 None
+INFO:root:Success: SSSSSfile-location: /home/ganesh/dev/DataLoader_Api/routes/TCGA-A8-A096-01Z-00-DX1.FCECFB0D-4E02-4C69-A0FE-7D6C7F9FEB07.svs
+INFO:root:Compeleted on: 2016-03-01 11:37:37.079435
