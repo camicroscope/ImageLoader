@@ -91,7 +91,10 @@ function loadConfigurations(){
     app.locals["dataLoader.py"] = config["dataLoader.py"];
     app.locals["api_key"] = config["api_key"];
     app.locals["api_submit_entry"] = config["api_submit_entry"];
-
+    app.locals["image_directory"] = config["image_directory"];
+    app.locals["api_get_md5_for_image"] = config["api_get_md5_for_image"];
+    app.locals["api_subject_id_exists"] = config["api_subject_id_exists"];
+    console.log(config["image_directory"])
     //console.log(app);
 }
 
