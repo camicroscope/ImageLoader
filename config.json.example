@@ -1,0 +1,9 @@
+{
+
+    "dataLoader.py": "/home/ganesh/dev/DataLoader_Api/DataLoader/dataLoader/dataloader.py",
+    "api_key": "####",
+    "api_submit_entry": "http://localhost:9099/services/test/DataLoaderApiTest/submit/json",
+    "image_directory": "/home/ganesh/images",
+    "api_get_md5_for_image": "http://localhost:9099/services/test/DataLoaderApiTest/query/getMD5forImage",
+    "api_subject_id_exists": "http://localhost:9099/services/test/DataLoaderApiTest/query/getImagesForSubjectId"
+}
