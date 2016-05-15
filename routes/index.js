@@ -6,16 +6,12 @@ var app = require("../app");
 console.log(app);
 var path = require("path");
 var superagent = require("superagent");
-//var DATA_LOADER_PY = "/home/ganesh/dev/DataLoader_Api/DataLoader/dataLoader/dataloader.py";
 
-//var api = "http://imaging.cci.emory.edu:9099/services/test/DataLoaderApiTest/submit/json";
-
-//router.get("/
 
 router.get("/subjectIdExists", function(req, res, next){
     var api_key = req.app.locals.api_key;
     var api = req.app.locals.api_subject_id_exists;
-    var url = api + "?api_key=" + api_key + "&Subject_ID=" + req.query.SubjectUID;
+    var url = api + "?api_key=" + api_key + "&Subject_ID=" + req.query.case_id;
 
     superagent.get(url).end(function(err, response){
         if(err){
@@ -64,37 +60,38 @@ router.post('/submitData', function(req, res, next){
     req.pipe(req.busboy);
     var Image_ID ="";
     /*Upload file*/
-
+    var case_id;
     req.busboy.on('field', function(fieldname, val){
-        console.log("field rcvd!");
-        Image_ID = val;
-        console.log(Image_ID);
-
-        //console.log(url);
-
+        console.log("field recieved!");
+        console.log(fieldname);
+        if(fieldname == "case_id"){
+            case_id = val;
+            //console.log(Image_ID);
+        } else {
+            console.log("invalid fieldname: "+ fieldname);
+        }
 
     });
 
 
     req.busboy.on('file', function(fieldname, file, filename){
-        //console.log(fieldname);
-        //
-        //
+
         var api_key = req.app.locals.api_key;
         var api_exists = req.app.locals.api_subject_id_exists;
-        var url = api_exists + "?api_key=" + api_key + "&Subject_ID=" + Image_ID;
+        var url = api_exists + "?api_key=" + api_key + "&Subject_ID=" + case_id;
 
         superagent.get(url).end(function(err, response){
         
             if(err){
-                res.json({"status": "Error! Couldn't connect to Bindass"});
+                //console.log(err);
+                return res.status(400).json({"status": "Error! Couldn't connect to Bindass"});
             }
             var data = (response.body);
             console.log(data);
             if(data.length){
-                res.json({"status": "Error", "message": "Duplicate image"});
+                //console.log("duplicate");
+                return res.status(400).json({"status": "Error", "message": "Duplicate image"});
             } else {
-
                 console.log("Uploading: "+filename);    
                 fstream = fs.createWriteStream(image_directory + '/'+filename)
                 file.pipe(fstream);
@@ -107,7 +104,7 @@ router.post('/submitData', function(req, res, next){
                     /*Once file is uploaded*/
                     var data = "Id, File";
                     data+="\n";
-                    data += Image_ID;
+                    data += case_id;
                     data+= ",";
                     data+= path.resolve(image_directory,filename);
                     /*Create input file*/
@@ -118,6 +115,7 @@ router.post('/submitData', function(req, res, next){
                     var dataLoader = require("child_process").spawn(
                         "python3", 
                         [DATA_LOADER_PY, "-i", path.resolve(image_directory, "input.csv"), "-o", api, "-a", api_key]);
+                    console.log("python3 "+DATA_LOADER_PY+ " -i " + path.resolve(image_directory, "input.csv") + " -o "+ api + " -a " + api_key);                    
 
                     var output = "";
                     //console.log(dataLoader);
@@ -125,20 +123,18 @@ router.post('/submitData', function(req, res, next){
                     dataLoader.stdout.on("data", function(data){output+=data;});
                     dataLoader.on("close", function(code){
                         //console.log(code);            
-                        if(code!== 0)
-                            return res.json({"status": "Error", "message":"DataLoader error: "+code});
                         console.log(output);
+                         //
+                        if(code!== 0)
+                            return res.status(500).json({"status": "Error", "message":"DataLoader error: "+code});
+
                         
                         return res.json({"status": "success"});
                     });
-                    
                 });
-                }   
-            });
-
-
+            }
+        });
     });
-    
 });
 
 /* GET home page. */
