@@ -83,7 +83,7 @@ router.post('/submitData', function(req, res, next){
         superagent.get(url).end(function(err, response){
         
             if(err){
-                //console.log(err);
+                console.log(err);
                 return res.status(400).json({"status": "Error! Couldn't connect to Bindass"});
             }
             var data = (response.body);
