@@ -5,7 +5,7 @@ var api_submit_entry = process.dataloader_api_submit_entry ||  "http://localhost
 var image_directory = process.dataLoader_image_directory ||  "/data/images";
 var api_get_md5_for_image = process.dataloader_api_subject_id_exists || "http://localhost:9099/services/TCGA/GeoJSONMetaData/query/getMD5forImage";
 var api_subject_id_exists = process.dataloader_api_subject_id_exists || "http://localhost:9099/services/TCGA/GeoJSONMetaData/query/getImagesForSubjectId";
-var port = process.dataloader_port || 3019;
+var port = process.dataloader_port || 3002;
 
 exports.dataLoader_py = dataLoader_py;
 exports.api_key = api_key;
