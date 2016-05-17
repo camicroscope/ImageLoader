@@ -92,7 +92,7 @@ function loadConfigurations(){
     //app.set("api_submit_entry", config["api_submit_entry"]);
     //app.set("image_directory", config["image_directory"]);
     
-    app.locals["dataLoader.py"] = config.dataloader_py;
+    app.locals["dataLoader.py"] = config.dataLoader_py;
     app.locals["api_key"] = config.api_key;
     app.locals["api_submit_entry"] = config.api_submit_entry;
     app.locals["image_directory"] = config.image_directory;
