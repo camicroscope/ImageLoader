@@ -68,7 +68,7 @@ router.post('/submitData', function(req, res, next){
         if(fieldname == "case_id"){
             case_id = val;
             //console.log(Image_ID);
-        } else if(fieldname == "study_id") }
+        } else if(fieldname == "study_id") {
             study_id = val;
         } else {
             console.log("invalid fieldname: "+ fieldname);
