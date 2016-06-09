@@ -61,12 +61,15 @@ router.post('/submitData', function(req, res, next){
     var Image_ID ="";
     /*Upload file*/
     var case_id;
+    var study_id = "default"
     req.busboy.on('field', function(fieldname, val){
         console.log("field recieved!");
         console.log(fieldname);
         if(fieldname == "case_id"){
             case_id = val;
             //console.log(Image_ID);
+        } else if(fieldname == "study_id") }
+            study_id = val;
         } else {
             console.log("invalid fieldname: "+ fieldname);
         }
@@ -102,9 +105,11 @@ router.post('/submitData', function(req, res, next){
                     console.log("Upload finished of" +filename);
                      
                     /*Once file is uploaded*/
-                    var data = "Id, File";
+                    var data = "Id, study_id, File";
                     data+="\n";
                     data += case_id;
+                    data += ",";
+                    data += study_id;
                     data+= ",";
                     data+= path.resolve(image_directory,filename);
                     /*Create input file*/
