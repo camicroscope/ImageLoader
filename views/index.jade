@@ -1,10 +1,10 @@
 extends layout
 
 block content
-    h1 DataLoader
+    h1 caMicroscope DataLoader
     form(action = "/submitData", method="post", enctype="multipart/form-data")
         span.label Image Id:
-        input(type="text", name="id", label="Image ID: ")
+        input(type="text", name="case_id", label="Image ID: ")
         br
         span.label Upload File:
         input(type="file", name="upload_image")
