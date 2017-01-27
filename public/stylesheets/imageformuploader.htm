@@ -21,8 +21,9 @@
     <div class="percent">0%</div >
 </div>
 <div id="status"></div><br>
-<h3 id="estatus">STATUS</h3>
+<h3 id="estatus"></h3>
 <script>
+document.getElementById("back").href = "http://"+location.hostname;
 $(document).ready(function(){
         var bar = $('.bar');
         var percent = $('.percent');
