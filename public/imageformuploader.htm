@@ -64,7 +64,7 @@ $(document).ready(function(){
                 imageid = imageid.trim()
                 $.ajax({
                         dataType: "JSON",
-                        url: "http://129.49.249.177:3000/?limit=100&find={'subject_id':'"+imageid+"'}&db=quip&collection=images",
+                        url: "http://"+location.hostname+":3000/?limit=100&find={'subject_id':'"+imageid+"'}&db=quip&collection=images",
                         success: function(response) {
                                         if (response.length==0) {
                                                 $('#uploadme').ajaxSubmit(options);
