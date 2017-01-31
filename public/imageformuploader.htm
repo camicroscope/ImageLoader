@@ -62,6 +62,9 @@ $(document).ready(function(){
         $('#uploadme').submit(function() {
                 var imageid = document.getElementById("imageid").value;
                 imageid = imageid.trim()
+                // remove space
+                imageid = imageid.split(' ').join('_');
+
                 $.ajax({
                         dataType: "JSON",
                         url: "http://"+location.hostname+":3000/?limit=100&find={'subject_id':'"+imageid+"'}&db=quip&collection=images",
