@@ -64,6 +64,7 @@ $(document).ready(function(){
                 imageid = imageid.trim()
                 // remove space
                 imageid = imageid.split(' ').join('_');
+                document.getElementById("imageid").value = imageid;
 
                 $.ajax({
                         dataType: "JSON",
