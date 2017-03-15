@@ -3,7 +3,15 @@
 Following examples assume `<API_PORT>==32799`
 
 ### POST /submitData
+
+This is a multipart post request with fields:
+* `id`: Identified of the image
+* `upload`: Image file path
+
+Example:
+
 `curl -v -F id=TCGA-02-0001 -F upload=@TCGA-02-0001-01Z-00-DX1.83fce43e-42ac-4dcd-b156-2908e75f2e47.svs http://localhost:32799/submitData`
+
 Return type: `json`
 On success returns: `{"status":"success"}`
 
