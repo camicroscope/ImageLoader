@@ -48,6 +48,17 @@ router.get("/getMD5ForImage", function(req, res, next){
  
 })
 
+function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 5; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
 //console.log(express.static(__dirname));
 router.post('/submitData', function(req, res, next){
 //    console.log("submitting datA");
@@ -96,6 +107,8 @@ router.post('/submitData', function(req, res, next){
                 return res.status(400).json({"status": "Error", "message": "Duplicate image"});
             } else {
                 console.log("Uploading: "+filename);    
+                //add unique characters to filename to avoid overwriting existing files with same name
+                filename = filename.substr(0, filename.length - 4) +"-"+ makeid() +"."+ filename.substr(filename.length-3,3);
                 fstream = fs.createWriteStream(image_directory + '/'+filename)
                 file.pipe(fstream);
                 fstream.on("close", function(){
