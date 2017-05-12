@@ -108,7 +108,8 @@ router.post('/submitData', function(req, res, next){
             } else {
                 console.log("Uploading: "+filename);    
                 //add unique characters to filename to avoid overwriting existing files with same name
-                filename = filename.substr(0, filename.length - 4) +"-"+ makeid() +"."+ filename.substr(filename.length-3,3);
+		var uid = makeid();
+                filename = filename.substr(0, filename.length - 4) +"-"+ uid +"."+ filename.substr(filename.length-3,3);
                 fstream = fs.createWriteStream(image_directory + '/'+filename)
                 file.pipe(fstream);
                 fstream.on("close", function(){
@@ -126,14 +127,14 @@ router.post('/submitData', function(req, res, next){
                     data+= ",";
                     data+= path.resolve(image_directory,filename);
                     /*Create input file*/
-                    fs.writeFileSync(path.resolve(image_directory,"input.csv"), data);
+                    fs.writeFileSync(path.resolve(image_directory,"input-"+uid+".csv"), data);
                                 
                     /* call the dataloader python utility */
                     console.log("Running dataloader.py"); 
                     var dataLoader = require("child_process").spawn(
                         "python3", 
-                        [DATA_LOADER_PY, "-i", path.resolve(image_directory, "input.csv"), "-o", api, "-a", api_key]);
-                    console.log("python3 "+DATA_LOADER_PY+ " -i " + path.resolve(image_directory, "input.csv") + " -o "+ api + " -a " + api_key);                    
+                        [DATA_LOADER_PY, "-i", path.resolve(image_directory, "input-"+uid+".csv"), "-o", api, "-a", api_key]);
+                    console.log("python3 "+DATA_LOADER_PY+ " -i " + path.resolve(image_directory, "input-"+uid+".csv") + " -o "+ api + " -a " + api_key);                    
 
                     var output = "";
                     //console.log(dataLoader);
