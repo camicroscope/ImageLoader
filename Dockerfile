@@ -17,7 +17,7 @@ RUN apt-get -q update
 # RUN apt-get install -q -y libcurl3 
 
 ### need build tools for building openslide and later iipsrv
-RUN apt-get -q -y install libcurl3 git autoconf automake make libtool pkg-config cmake
+RUN apt-get -q -y install libcurl3 git
 
 RUN mkdir /root/src
 
