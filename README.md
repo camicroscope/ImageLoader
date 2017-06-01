@@ -1,5 +1,5 @@
 
-## Dataloader API
+## Dataloader API [![Build Status](https://travis-ci.org/camicroscope/ImageLoader.svg?branch=master)](https://travis-ci.org/camicroscope/ImageLoader)
 Following examples assume `<API_PORT>==32799`
 
 ### POST /submitData
