@@ -1,0 +1,12 @@
+sudo: required
+
+language: nodej_s
+
+services:
+  - docker
+
+before_install:
+- docker build -t camicroscope_imageloader . 
+- docker run -itd -p 3002:3002  -v /data/images:/data/images -e "dataloader_host=http://localhost" camicroscope_imageloader
+script:
+- docker ps | grep -q camicroscope_imageloader
