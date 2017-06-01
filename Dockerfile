@@ -36,13 +36,12 @@ RUN apt-get install -y openslide-tools python3-openslide \
 # Data Loader API
 RUN mkdir -p /root/dataloader
 WORKDIR /root/dataloader
-EXPOSE 3001
+EXPOSE 3002
 RUN git clone --recursive https://github.com/camicroscope/ImageLoader.git .
 RUN git submodule update --recursive --remote
 RUN npm install
 
 RUN ["pip3","install", "-r",  "/root/dataloader/DataLoader/requirements.txt"]
-EXPOSE 3000
 
 # Install forever
 RUN  ln -s "$(which nodejs)" /usr/bin/node
