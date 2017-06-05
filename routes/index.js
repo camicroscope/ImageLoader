@@ -159,7 +159,7 @@ router.post('/submitData', function(req, res, next){
 /* GET home page. */
 router.get('/', function(req, res, next) {
   console.log(req.app.locals.api_key);
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'caMicroscope Image Loader' });
 });
 
 module.exports = router;
