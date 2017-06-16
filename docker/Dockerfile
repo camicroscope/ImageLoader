@@ -46,5 +46,9 @@ RUN ["pip3","install", "-r",  "/root/dataloader/DataLoader/requirements.txt"]
 # Install forever
 RUN  ln -s "$(which nodejs)" /usr/bin/node
 RUN npm install -g forever
-COPY run.sh /root/dataloader/run.sh
+COPY run.sh /root/run.sh
+RUN apt-get install -y default-jre
+COPY trusted-app-client-0.0.1-jar-with-dependencies.jar /root/
+COPY createUser.py /root/  
+WORKDIR /root/ 
 CMD ["sh", "run.sh"]
