@@ -8,10 +8,8 @@ redis-server &
 apikey=$(python createUser.py loader@quip)
 
 
-sed -i -e "s/APIKEY/$apikey/g" annotationloader/config.js
+sed -i -e "s/APIKEY/$apikey/g" /root/dataloader/config.js
 # Run Annotations Loader
-forever start /root/annotationloader/bin/www 
-# Run KUE Dashboard
-forever start  /root/annotationloader/node_modules/kue/bin/kue-dashboard 
+forever start /root/dataloader/bin/www 
 while true; do sleep 1000; done
 
