@@ -1,0 +1,28 @@
+
+
+
+exports.UPLOADS_DIR =  "/root/";
+
+var bindaas_host = process.env.annotations_host || "http://camicroscope-bindaas:9099";
+var bindaas_project = process.env.annotations_project || "/Camicroscope_Annotations";
+var bindaas_provider = process.env.annotations_provider || "/MarkupLoader";
+var bindaas_api_key = process.env.annotations_api_key || "APIKEY";
+
+var mongo_host = process.env.mongo_host || "http://camicroscope-mongo:9099";
+var mongo_port = process.env.mongo_port || 27017;
+
+bindaas_host = bindaas_host + "/services" ;
+
+/* No trailing slashes */
+
+exports.bindaas_host = bindaas_host;
+exports.bindaas_project = bindaas_project;
+exports.bindaas_provider = bindaas_provider;
+exports.bindaas_api_key = bindaas_api_key;
+
+exports.mongo_host = mongo_host;
+exports.mongo_port = mongo_port;
+
+exports.MASK_TO_POLY_JAR_PATH = "/root/nuclear-segmentation-results/build/libs/mask-to-polygon-1.3.jar";
+exports.MONGODB_LOADER_PATH = "/root/nuclear-segmentation-results/build/libs/mongodb-loader-1.3.jar"; 
+exports.OPENCV_DIR = "/root/OpenCV/opencv-3.0.0/build/lib";
