@@ -5,7 +5,7 @@ redis-server &
 
 #Get API key from bindaas
 #alias api_k="eval $(python createUser.py loasdderi1@qui1zsadfdiasd)";
-sleep 30; # wait for bindaas
+sleep 60; # wait for bindaas
 apikey=$(python createUser.py loader@quip)
 
 
