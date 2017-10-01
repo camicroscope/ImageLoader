@@ -109,7 +109,7 @@ router.post('/submitData', function(req, res, next){
                 console.log("Uploading: "+filename);    
                 //add unique characters to filename to avoid overwriting existing files with same name
 		var uid = makeid();
-                filename = filename.substr(0, filename.length - 4) +"-"+ uid +"."+ filename.substr(filename.length-3,3);
+                filename = uid + "-" + filename;
                 fstream = fs.createWriteStream(image_directory + '/'+filename)
                 file.pipe(fstream);
                 fstream.on("close", function(){
