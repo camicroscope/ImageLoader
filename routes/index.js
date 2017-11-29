@@ -119,7 +119,7 @@ router.post('/submitData', function(req, res, next){
                     console.log("Upload finished of" +filename);
                      
                     /*Once file is uploaded*/
-                    var data = "Id, study_id, File";
+                    var data = "case_id, study_id, filename";
                     data+="\n";
                     data += case_id;
                     data += ",";

@@ -37,7 +37,7 @@ RUN apt-get install -y openslide-tools python3-openslide \
 RUN mkdir -p /root/dataloader
 WORKDIR /root/dataloader
 EXPOSE 3002
-RUN git clone --recursive https://github.com/camicroscope/ImageLoader.git .
+RUN git clone --recursive -b develop https://github.com/camicroscope/ImageLoader.git .
 RUN git submodule update --recursive --remote
 RUN npm install
 
