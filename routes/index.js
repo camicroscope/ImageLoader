@@ -59,6 +59,82 @@ function makeid()
     return text;
 }
 
+var process_file = function(fieldname, file, filename){
+
+    var api_key = req.app.locals.api_key;
+    var api_exists = req.app.locals.api_subject_id_exists;
+    var url = api_exists + "?api_key=" + api_key + "&Subject_ID=" + case_id;
+
+    superagent.get(url).end(function(err, response){
+
+        if(err){
+            console.log(err);
+            return res.status(400).json({"status": "Error! Couldn't connect to Bindass"});
+        }
+        var data = (response.body);
+        console.log(data);
+        if(data.length){
+            //console.log("duplicate");
+            return res.status(400).json({"status": "Error", "message": "Duplicate image"});
+        } else {
+            console.log("Uploading: "+filename);
+            //add unique characters to filename to avoid overwriting existing files with same name
+            var uid = makeid();
+            filename = uid + "-" + filename;
+            fstream = fs.createWriteStream(image_directory + '/'+filename)
+            if (typeof file === 'string' || file instanceof String){
+              // is it a url
+              var request = http.get(file, function(response) {
+                response.pipe(fstream);
+              });
+            } else {
+              // it's a file
+              file.pipe(fstream);
+            }
+            fstream.on("close", function(){
+                //console.log(req.body);
+                //var Image_ID =  req.body.id;
+
+                console.log("Upload finished of" +filename);
+
+                /*Once file is uploaded*/
+                var data = "Id, study_id, File";
+                data+="\n";
+                data += case_id;
+                data += ",";
+                data += study_id;
+                data+= ",";
+                data+= path.resolve(image_directory,filename);
+                /*Create input file*/
+                fs.writeFileSync(path.resolve(image_directory,"input-"+uid+".csv"), data);
+
+                /* call the dataloader python utility */
+                console.log("Running dataloader.py");
+                var dataLoader = require("child_process").spawn(
+                    "python3",
+                    [DATA_LOADER_PY, "-i", path.resolve(image_directory, "input-"+uid+".csv"), "-o", api, "-a", api_key]);
+                console.log("python3 "+DATA_LOADER_PY+ " -i " + path.resolve(image_directory, "input-"+uid+".csv") + " -o "+ api + " -a " + api_key);
+
+                var output = "";
+                //console.log(dataLoader);
+
+                dataLoader.stdout.on("data", function(data){output+=data;});
+                dataLoader.on("close", function(code){
+                    //console.log(code);
+                    console.log(output);
+                     //
+                    if(code!== 0)
+                        return res.status(500).json({"status": "Error", "message":"DataLoader error: "+code});
+
+
+                    return res.json({"status": "success"});
+                });
+            });
+        }
+    });
+}
+
+
 //console.log(express.static(__dirname));
 router.post('/submitData', function(req, res, next){
 //    console.log("submitting datA");
@@ -86,74 +162,7 @@ router.post('/submitData', function(req, res, next){
         }
 
     });
-
-
-    req.busboy.on('file', function(fieldname, file, filename){
-
-        var api_key = req.app.locals.api_key;
-        var api_exists = req.app.locals.api_subject_id_exists;
-        var url = api_exists + "?api_key=" + api_key + "&Subject_ID=" + case_id;
-
-        superagent.get(url).end(function(err, response){
-
-            if(err){
-                console.log(err);
-                return res.status(400).json({"status": "Error! Couldn't connect to Bindass"});
-            }
-            var data = (response.body);
-            console.log(data);
-            if(data.length){
-                //console.log("duplicate");
-                return res.status(400).json({"status": "Error", "message": "Duplicate image"});
-            } else {
-                console.log("Uploading: "+filename);
-                //add unique characters to filename to avoid overwriting existing files with same name
-		var uid = makeid();
-                filename = uid + "-" + filename;
-                fstream = fs.createWriteStream(image_directory + '/'+filename)
-                file.pipe(fstream);
-                fstream.on("close", function(){
-                    //console.log(req.body);
-                    //var Image_ID =  req.body.id;
-
-                    console.log("Upload finished of" +filename);
-
-                    /*Once file is uploaded*/
-                    var data = "Id, study_id, File";
-                    data+="\n";
-                    data += case_id;
-                    data += ",";
-                    data += study_id;
-                    data+= ",";
-                    data+= path.resolve(image_directory,filename);
-                    /*Create input file*/
-                    fs.writeFileSync(path.resolve(image_directory,"input-"+uid+".csv"), data);
-
-                    /* call the dataloader python utility */
-                    console.log("Running dataloader.py");
-                    var dataLoader = require("child_process").spawn(
-                        "python3",
-                        [DATA_LOADER_PY, "-i", path.resolve(image_directory, "input-"+uid+".csv"), "-o", api, "-a", api_key]);
-                    console.log("python3 "+DATA_LOADER_PY+ " -i " + path.resolve(image_directory, "input-"+uid+".csv") + " -o "+ api + " -a " + api_key);
-
-                    var output = "";
-                    //console.log(dataLoader);
-
-                    dataLoader.stdout.on("data", function(data){output+=data;});
-                    dataLoader.on("close", function(code){
-                        //console.log(code);
-                        console.log(output);
-                         //
-                        if(code!== 0)
-                            return res.status(500).json({"status": "Error", "message":"DataLoader error: "+code});
-
-
-                        return res.json({"status": "success"});
-                    });
-                });
-            }
-        });
-    });
+    req.busboy.on('file', process_file);
 });
 
 router.post('/boxData', function(req, res, next){
@@ -178,13 +187,19 @@ router.post('/boxData', function(req, res, next){
         } else if(fieldname == "study_id") {
             study_id = val;
         } else if(fieldname == "box_url") {
-            // TODO consider validating
-            src_url = val;
+            // does it come from box?
+            if (val.substring(0,24)==="https://dl.boxcloud.com/"){
+              src_url = val;
+            }
         } else {
             console.log("invalid fieldname: "+ fieldname);
         }
 
     });
+    // TODO do we want this to be case_id?
+    process_file("", src_url, case_id)
+
+  });
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
