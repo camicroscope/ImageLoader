@@ -21,14 +21,14 @@ router.get("/subjectIdExists", function(req, res, next){
         /*
         if(!data){
             res.json({});
-        } 
+        }
         */
         res.json(data);
     });
 });
 
 router.get("/getMD5ForImage", function(req, res, next){
-    
+
     var api_key = req.app.locals.api_key;
     var api = req.app.locals.api_get_md5_for_image;
     var image_directory = req.app.locals.image_directory;
@@ -45,7 +45,7 @@ router.get("/getMD5ForImage", function(req, res, next){
         //console.log(res);
         //res.json({"status": "ok"});
     });
- 
+
 })
 
 function makeid()
@@ -66,7 +66,7 @@ router.post('/submitData', function(req, res, next){
     var DATA_LOADER_PY = req.app.locals["dataLoader.py"];
     var api_key = req.app.locals.api_key;
     var image_directory = req.app.locals.image_directory;
-    var api = req.app.locals.api_submit_entry;  
+    var api = req.app.locals.api_submit_entry;
     //var Image_ID =  req.body.id;
     req.pipe(req.busboy);
     var Image_ID ="";
@@ -95,7 +95,7 @@ router.post('/submitData', function(req, res, next){
         var url = api_exists + "?api_key=" + api_key + "&Subject_ID=" + case_id;
 
         superagent.get(url).end(function(err, response){
-        
+
             if(err){
                 console.log(err);
                 return res.status(400).json({"status": "Error! Couldn't connect to Bindass"});
@@ -106,7 +106,7 @@ router.post('/submitData', function(req, res, next){
                 //console.log("duplicate");
                 return res.status(400).json({"status": "Error", "message": "Duplicate image"});
             } else {
-                console.log("Uploading: "+filename);    
+                console.log("Uploading: "+filename);
                 //add unique characters to filename to avoid overwriting existing files with same name
 		var uid = makeid();
                 filename = uid + "-" + filename;
@@ -117,7 +117,7 @@ router.post('/submitData', function(req, res, next){
                     //var Image_ID =  req.body.id;
 
                     console.log("Upload finished of" +filename);
-                     
+
                     /*Once file is uploaded*/
                     var data = "Id, study_id, File";
                     data+="\n";
@@ -128,26 +128,26 @@ router.post('/submitData', function(req, res, next){
                     data+= path.resolve(image_directory,filename);
                     /*Create input file*/
                     fs.writeFileSync(path.resolve(image_directory,"input-"+uid+".csv"), data);
-                                
+
                     /* call the dataloader python utility */
-                    console.log("Running dataloader.py"); 
+                    console.log("Running dataloader.py");
                     var dataLoader = require("child_process").spawn(
-                        "python3", 
+                        "python3",
                         [DATA_LOADER_PY, "-i", path.resolve(image_directory, "input-"+uid+".csv"), "-o", api, "-a", api_key]);
-                    console.log("python3 "+DATA_LOADER_PY+ " -i " + path.resolve(image_directory, "input-"+uid+".csv") + " -o "+ api + " -a " + api_key);                    
+                    console.log("python3 "+DATA_LOADER_PY+ " -i " + path.resolve(image_directory, "input-"+uid+".csv") + " -o "+ api + " -a " + api_key);
 
                     var output = "";
                     //console.log(dataLoader);
 
                     dataLoader.stdout.on("data", function(data){output+=data;});
                     dataLoader.on("close", function(code){
-                        //console.log(code);            
+                        //console.log(code);
                         console.log(output);
                          //
                         if(code!== 0)
                             return res.status(500).json({"status": "Error", "message":"DataLoader error: "+code});
 
-                        
+
                         return res.json({"status": "success"});
                     });
                 });
@@ -155,6 +155,36 @@ router.post('/submitData', function(req, res, next){
         });
     });
 });
+
+router.post('/boxData', function(req, res, next){
+//    console.log("submitting datA");
+//    console.log(req);
+    var DATA_LOADER_PY = req.app.locals["dataLoader.py"];
+    var api_key = req.app.locals.api_key;
+    var image_directory = req.app.locals.image_directory;
+    var api = req.app.locals.api_submit_entry;
+    //var Image_ID =  req.body.id;
+    req.pipe(req.busboy);
+    var Image_ID ="";
+    /*Upload file*/
+    var case_id;
+    var study_id = "default"
+    req.busboy.on('field', function(fieldname, val){
+        console.log("field recieved!");
+        console.log(fieldname);
+        if(fieldname == "case_id"){
+            case_id = val;
+            //console.log(Image_ID);
+        } else if(fieldname == "study_id") {
+            study_id = val;
+        } else if(fieldname == "box_url") {
+            // TODO consider validating
+            src_url = val;
+        } else {
+            console.log("invalid fieldname: "+ fieldname);
+        }
+
+    });
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
