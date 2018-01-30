@@ -190,6 +190,7 @@ router.post('/boxData', function(req, res, next){
             // does it come from box?
             if (val.substring(0,24)==="https://dl.boxcloud.com/"){
               src_url = val;
+              process_file("", src_url, case_id)
             }
         } else {
             console.log("invalid fieldname: "+ fieldname);
@@ -197,7 +198,7 @@ router.post('/boxData', function(req, res, next){
 
     });
     // TODO do we want this to be case_id?
-    process_file("", src_url, case_id)
+
 
   });
 
