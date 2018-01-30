@@ -84,8 +84,8 @@ var process_file = function(fieldname, file, filename){
             fstream = fs.createWriteStream(image_directory + '/'+filename)
             if (typeof file === 'string' || file instanceof String){
               // is it a url
-              var request = http.get(file, function(response) {
-                response.pipe(fstream);
+              var request = http.get(file, function(file_resp) {
+                file_resp.pipe(fstream);
               });
             } else {
               // it's a file
@@ -190,7 +190,8 @@ router.post('/boxData', function(req, res, next){
             // does it come from box?
             if (val.substring(0,24)==="https://dl.boxcloud.com/"){
               src_url = val;
-              process_file("", src_url, case_id)
+              process_file("", src_url, case_id);
+              res.send("success?")
             }
         } else {
             console.log("invalid fieldname: "+ fieldname);
